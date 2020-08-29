@@ -16,19 +16,20 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     // создать таблицу
     public void createUsersTable() {
         PreparedStatement ps = null;
-        String sql = "CREATE TABLE User (id INT NOT NULL," +
+        String sql = "CREATE TABLE User (id BIGINT NOT NULL," +
                 "name VARCHAR(45) NOT NULL," +
                 "lastName VARCHAR(45) NOT NULL," +
                 "age INT NOT NULL," +
-                "PRIMARY KEY (id)";
+                "PRIMARY KEY (id))";
         try {
             ps = connection.prepareStatement(sql);
             ps.executeUpdate();
+            System.out.println("Table was created successfully");
         } catch (SQLException e) {
-            System.out.println("Got sqlException creating new users table:");
+            System.out.println("***** Got sqlException creating new users table:");
             e.printStackTrace();
         } catch (NullPointerException eN) {
-            System.out.println("Got NullPointerException creating new users table:");
+            System.out.println("***** Got NullPointerException creating new users table:");
             eN.printStackTrace();
         }
     }
@@ -40,8 +41,9 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         try {
             statement = connection.prepareStatement(sql);
             statement.executeUpdate();
+            System.out.println("Table was deleted successfully");
         } catch (SQLException e) {
-            System.out.println("Got sqlException deleting table:");
+            System.out.println("***** Got sqlException deleting table:");
             e.printStackTrace();
         }
     }
@@ -49,8 +51,8 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     // сохранить юзера
     public void saveUser(String name, String lastName, byte age) {
         PreparedStatement ps = null;
-        String sql = "INSERT INTO MyTable (id, name, lastName, age) VALUES (?, ?, ?, ?)";
         Random random = new Random();
+        String sql = "INSERT INTO User (id, name, lastName, age) VALUES (?, ?, ?, ?)";
         try {
             ps = connection.prepareStatement(sql);
             ps.setLong(1, random.nextLong());
@@ -58,8 +60,9 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
             ps.setString(3, lastName);
             ps.setByte(4, age);
             ps.executeUpdate();
+            System.out.println("User с именем – " + name + " добавлен в базу данных");
         } catch (SQLException e) {
-            System.out.println("Got sqlException saving user:");
+            System.out.println("***** Got sqlException saving user:");
             e.printStackTrace();
         }
     }
@@ -72,8 +75,9 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
             ps = connection.prepareStatement(sql);
             ps.setLong(1, id);
             ps.executeUpdate();
+            System.out.println("User with id - " + id + " was deleted successfully");
         } catch (SQLException e) {
-            System.out.println("Got sqlException removing user:");
+            System.out.println("***** Got sqlException removing user:");
             e.printStackTrace();
         }
     }
@@ -95,7 +99,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
                 allUsers.add(user);
             }
         } catch (SQLException e) {
-            System.out.println("Got sqlException getting all users:");
+            System.out.println("***** Got sqlException getting all users:");
             e.printStackTrace();
         }
         return allUsers;
@@ -108,8 +112,9 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         try {
             ps = connection.prepareStatement(sql);
             ps.executeUpdate();
+            System.out.println("Table was cleaned successfully");
         } catch (SQLException e) {
-            System.out.println("Got sqlException removing user:");
+            System.out.println("***** Got sqlException removing user:");
             e.printStackTrace();
         }
     }
