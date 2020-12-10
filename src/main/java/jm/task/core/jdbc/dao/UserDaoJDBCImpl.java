@@ -10,12 +10,11 @@ import java.util.Random;
 
 public class UserDaoJDBCImpl extends Util implements UserDao {
 
-    private Connection connection = getConnection();
+    private final Connection connection = getConnection();
 
     public UserDaoJDBCImpl() {
     }
 
-    // создать таблицу
     public void createUsersTable() {
         try (PreparedStatement ps = connection.prepareStatement("CREATE TABLE User (id BIGINT NOT NULL," +
                 "name VARCHAR(45) NOT NULL," +
@@ -24,27 +23,20 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
                 "PRIMARY KEY (id))")) {
             ps.executeUpdate();
             System.out.println("Table was created successfully");
-        } catch (SQLException e) {
-            System.out.println("***** Got sqlException creating new users table:");
-            e.printStackTrace();
-        } catch (NullPointerException eN) {
-            System.out.println("***** Got NullPointerException creating new users table:");
-            eN.printStackTrace();
+        } catch (SQLException | NullPointerException e) {
+            throw new RuntimeException("***** Got sqlException creating new users table", e);
         }
     }
 
-    // удалить всю таблицу
     public void dropUsersTable() {
         try (PreparedStatement ps = connection.prepareStatement("DROP TABLE User")) {
             ps.executeUpdate();
             System.out.println("Table was deleted successfully");
         } catch (SQLException e) {
-            System.out.println("***** Got sqlException deleting table:");
-            e.printStackTrace();
+            throw new RuntimeException("***** Got sqlException deleting table", e);
         }
     }
 
-    // сохранить юзера
     public void saveUser(String name, String lastName, byte age) {
         Random random = new Random();
         try (PreparedStatement ps = connection.prepareStatement("INSERT INTO User (id, name, lastName, age)" +
@@ -56,24 +48,20 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
             ps.executeUpdate();
             System.out.println("User с именем – " + name + " добавлен в базу данных");
         } catch (SQLException e) {
-            System.out.println("***** Got sqlException saving user:");
-            e.printStackTrace();
+            throw new RuntimeException("***** Got sqlException saving user", e);
         }
     }
 
-    // удалить юзера по ид
     public void removeUserById(long id) {
         try (PreparedStatement ps = connection.prepareStatement("DELETE FROM User WHERE id=?")) {
             ps.setLong(1, id);
             ps.executeUpdate();
             System.out.println("User with id - " + id + " was deleted successfully");
         } catch (SQLException e) {
-            System.out.println("***** Got sqlException removing user:");
-            e.printStackTrace();
+            throw new RuntimeException("***** Got sqlException removing user", e);
         }
     }
 
-    // получить всех юзеров
     public List<User> getAllUsers() {
         List<User> allUsers = new ArrayList<>();
         try (Statement s = connection.createStatement()) {
@@ -87,20 +75,17 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
                 allUsers.add(user);
             }
         } catch (SQLException e) {
-            System.out.println("***** Got sqlException getting all users:");
-            e.printStackTrace();
+            throw new RuntimeException("***** Got sqlException getting all users", e);
         }
         return allUsers;
     }
 
-    // очистить таблицу
     public void cleanUsersTable() {
         try (PreparedStatement ps = connection.prepareStatement("DELETE FROM User")) {
             ps.executeUpdate();
             System.out.println("Table was cleaned successfully");
         } catch (SQLException e) {
-            System.out.println("***** Got sqlException removing user:");
-            e.printStackTrace();
+            throw new RuntimeException("***** Got sqlException removing user", e);
         }
     }
 }
